@@ -1,5 +1,5 @@
 from langchain_chroma import Chroma
-from langchain_openai import OpenAIEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -7,7 +7,7 @@ load_dotenv()
 persistent_directory = "db/chroma_db"
 
 # Load embeddings and vector store
-embedding_model = OpenAIEmbeddings(model="text-embedding-3-small")
+embedding_model = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
 
 db = Chroma(
     persist_directory=persistent_directory,
@@ -16,9 +16,9 @@ db = Chroma(
 )
 
 # Search for relevant documents
-query = "How much did Microsoft pay to acquire GitHub?"
+query = "When was NVIDIA founded and by whom?"
 
-retriever = db.as_retriever(search_kwargs={"k": 5})
+retriever = db.as_retriever(search_kwargs={"k": 10})
 
 # retriever = db.as_retriever(
 #     search_type="similarity_score_threshold",

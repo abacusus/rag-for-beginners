@@ -1,7 +1,7 @@
 from langchain_chroma import Chroma
-from langchain_openai import OpenAIEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from dotenv import load_dotenv
-from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import HumanMessage, SystemMessage
 
 
@@ -10,7 +10,7 @@ load_dotenv()
 persistent_directory = "db/chroma_db"
 
 # Load embeddings and vector store
-embedding_model = OpenAIEmbeddings(model="text-embedding-3-small")
+embedding_model = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
 
 db = Chroma(
     persist_directory=persistent_directory,
@@ -19,7 +19,7 @@ db = Chroma(
 )
 
 # Search for relevant documents
-query = "How much did Microsoft pay to acquire GitHub?"
+query = "when did microsoft enetered the operating system business ?"
 
 retriever = db.as_retriever(search_kwargs={"k": 5})
 
@@ -50,7 +50,10 @@ Please provide a clear, helpful answer using only the information from these doc
 """
 
 # Create a ChatOpenAI model
-model = ChatOpenAI(model="gpt-4o")
+model = ChatGoogleGenerativeAI(
+    model="gemini-2.5-flash",
+    temperature=0.3
+)
 
 # Define the messages for the model
 messages = [

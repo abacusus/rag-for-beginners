@@ -1,5 +1,6 @@
 from langchain_chroma import Chroma
-from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from dotenv import load_dotenv
 from pydantic import BaseModel
 from typing import List
@@ -8,8 +9,11 @@ load_dotenv()
 
 # Setup
 persistent_directory = "db/chroma_db"
-embedding_model = OpenAIEmbeddings(model="text-embedding-3-small")
-llm = ChatOpenAI(model="gpt-4o", temperature=0)
+embedding_model = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
+llm = ChatGoogleGenerativeAI(
+    model="gemini-2.5-flash",
+    temperature=0.3
+)
 
 db = Chroma(
     persist_directory=persistent_directory,

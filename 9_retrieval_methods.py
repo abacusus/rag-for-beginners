@@ -1,12 +1,12 @@
 from langchain_chroma import Chroma
-from langchain_openai import OpenAIEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from dotenv import load_dotenv
 
 load_dotenv()
 
 # Setup
 persistent_directory = "db/chroma_db"
-embedding_model = OpenAIEmbeddings(model="text-embedding-3-small")
+embedding_model = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
 
 db = Chroma(
     persist_directory=persistent_directory,
@@ -41,45 +41,45 @@ print("-" * 60)
 # Only returns documents above a certain similarity score
 # ──────────────────────────────────────────────────────────────────
 
-# print("\n=== METHOD 2: Similarity with Score Threshold ===")
-# retriever = db.as_retriever(
-#     search_type="similarity_score_threshold",
-#     search_kwargs={
-#         "k": 3,
-#         "score_threshold": 0.3  # Only return docs with similarity >= 0.3
-#     }
-# )
+print("\n=== METHOD 2: Similarity with Score Threshold ===")
+retriever = db.as_retriever(
+ search_type="similarity_score_threshold",
+     search_kwargs={
+         "k": 3,
+         "score_threshold": 0.3  # Only return docs with similarity >= 0.3
+     }
+ )
 
-# docs = retriever.invoke(query)
-# print(f"Retrieved {len(docs)} documents (threshold: 0.3):\n")
+docs = retriever.invoke(query)
+print(f"Retrieved {len(docs)} documents (threshold: 0.3):\n")
 
-# for i, doc in enumerate(docs, 1):
-#     print(f"Document {i}:")
-#     print(f"{doc.page_content}\n")
+for i, doc in enumerate(docs, 1):
+     print(f"Document {i}:")
+     print(f"{doc.page_content}\n")
 
-# print("-" * 60)
+print("-" * 60)
 
 # # ──────────────────────────────────────────────────────────────────
 # # METHOD 3: Maximum Marginal Relevance (MMR)
 # # Balances relevance and diversity - avoids redundant results
 # # ──────────────────────────────────────────────────────────────────
 
-# print("\n=== METHOD 3: Maximum Marginal Relevance (MMR) ===")
-# retriever = db.as_retriever(
-#     search_type="mmr",
-#     search_kwargs={
-#         "k": 3,           # Final number of docs
-#         "fetch_k": 10,    # Initial pool to select from
-#         "lambda_mult": 0.5  # 0=max diversity, 1=max relevance
-#     }
-# )
+print("\n=== METHOD 3: Maximum Marginal Relevance (MMR) ===")
+retriever = db.as_retriever(
+     search_type="mmr",
+     search_kwargs={
+         "k": 3,           # Final number of docs
+         "fetch_k": 10,    # Initial pool to select from
+         "lambda_mult": 0.5  # 0=max diversity, 1=max relevance
+     }
+ )
 
-# docs = retriever.invoke(query)
-# print(f"Retrieved {len(docs)} documents (λ=0.5):\n")
+docs = retriever.invoke(query)
+print(f"Retrieved {len(docs)} documents (λ=0.5):\n")
 
-# for i, doc in enumerate(docs, 1):
-#     print(f"Document {i}:")
-#     print(f"{doc.page_content}\n")
+for i, doc in enumerate(docs, 1):
+     print(f"Document {i}:")
+     print(f"{doc.page_content}\n")
 
-# print("=" * 60)
-# print("Done! Try different queries or parameters to see the differences.")
+print("=" * 60)
+print("Done! Try different queries or parameters to see the differences.")

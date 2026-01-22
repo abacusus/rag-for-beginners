@@ -1,7 +1,7 @@
 import os
 from langchain_community.document_loaders import TextLoader, DirectoryLoader
 from langchain_text_splitters import CharacterTextSplitter
-from langchain_openai import OpenAIEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_chroma import Chroma
 from dotenv import load_dotenv
 
@@ -19,7 +19,8 @@ def load_documents(docs_path="docs"):
     loader = DirectoryLoader(
         path=docs_path,
         glob="*.txt",
-        loader_cls=TextLoader
+        loader_cls=TextLoader,
+        loader_kwargs={"encoding": "utf-8"}
     )
     
     documents = loader.load()
@@ -67,7 +68,7 @@ def create_vector_store(chunks, persist_directory="db/chroma_db"):
     """Create and persist ChromaDB vector store"""
     print("Creating embeddings and storing in ChromaDB...")
         
-    embedding_model = OpenAIEmbeddings(model="text-embedding-3-small")
+    embedding_model = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
     
     # Create ChromaDB vector store
     print("--- Creating vector store ---")
@@ -94,7 +95,10 @@ def main():
     if os.path.exists(persistent_directory):
         print("✅ Vector store already exists. No need to re-process documents.")
         
-        embedding_model = OpenAIEmbeddings(model="text-embedding-3-small")
+        embedding_model = GoogleGenerativeAIEmbeddings(
+        model="models/text-embedding-004"
+        # API key automatically picked from .env
+    )
         vectorstore = Chroma(
             persist_directory=persistent_directory,
             embedding_function=embedding_model, 
@@ -115,6 +119,9 @@ def main():
     vectorstore = create_vector_store(chunks, persistent_directory)
     
     print("\n✅ Ingestion complete! Your documents are now ready for RAG queries.")
+    print("========================================\n")
+    print(f"Vector store contains {vectorstore._collection.count()} documents.")
+    print(vectorstore)
     return vectorstore
 
 if __name__ == "__main__":
