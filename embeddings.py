@@ -3,7 +3,7 @@ from google.genai import types
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 
-client = genai.Client(api_key="AIzaSyDuk1gDTGii64IIiLyQGoAteq3GCfBapwI")
+client = genai.Client(api_key="apikey")
 
 texts = [
     "What is the meaning of life?",
