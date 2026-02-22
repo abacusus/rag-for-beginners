@@ -19,7 +19,7 @@ db = Chroma(
 )
 
 # Search for relevant documents
-query = "when did microsoft enetered the operating system business ?"
+query = "when was github acquired by microsoft?"
 
 retriever = db.as_retriever(search_kwargs={"k": 5})
 

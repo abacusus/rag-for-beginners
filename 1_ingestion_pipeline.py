@@ -1,12 +1,14 @@
-import os
-from langchain_community.document_loaders import TextLoader, DirectoryLoader
-from langchain_text_splitters import CharacterTextSplitter
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
-from langchain_chroma import Chroma
-from dotenv import load_dotenv
+import os 
+#i used it for newline here becuase f string doesnt accepts /n directly
+from langchain_community.document_loaders import TextLoader, DirectoryLoader#for loading text and directories
+from langchain_text_splitters import CharacterTextSplitter#for spltting"""text into chunks"""
+from langchain_google_genai import GoogleGenerativeAIEmbeddings#for generating embeddings ,jisse mene fork kiya usne OPENAI use kiya tha whichc costs 5 $ 
+from langchain_chroma import Chroma #chrome is a vector database
+from dotenv import load_dotenv #ye to jaante hi honge
+
 
 load_dotenv()
-
+#loading doc directory
 def load_documents(docs_path="docs"):
     """Load all text files from the docs directory"""
     print(f"Loading documents from {docs_path}...")
@@ -37,7 +39,7 @@ def load_documents(docs_path="docs"):
         print(f"  metadata: {doc.metadata}")
 
     return documents
-
+#splitting documents into chunks
 def split_documents(documents, chunk_size=1000, chunk_overlap=0):
     """Split documents into smaller chunks with overlap"""
     print("Splitting documents into chunks...")
@@ -45,12 +47,12 @@ def split_documents(documents, chunk_size=1000, chunk_overlap=0):
     text_splitter = CharacterTextSplitter(
         chunk_size=chunk_size, 
         chunk_overlap=chunk_overlap
-    )
+    ) #1000 char per chunk,no overlap
     
     chunks = text_splitter.split_documents(documents)
     
     if chunks:
-    
+        #shows the chunks
         for i, chunk in enumerate(chunks[:5]):
             print(f"\n--- Chunk {i+1} ---")
             print(f"Source: {chunk.metadata['source']}")
@@ -63,7 +65,7 @@ def split_documents(documents, chunk_size=1000, chunk_overlap=0):
             print(f"\n... and {len(chunks) - 5} more chunks")
     
     return chunks
-
+#vector db creation,vector databases store embeddings , dikhata me
 def create_vector_store(chunks, persist_directory="db/chroma_db"):
     """Create and persist ChromaDB vector store"""
     print("Creating embeddings and storing in ChromaDB...")
